@@ -1,6 +1,5 @@
 import json
 import os
-from dotenv import load_dotenv
 import spotipy
 import webbrowser
 from spotipy.oauth2 import SpotifyClientCredentials
