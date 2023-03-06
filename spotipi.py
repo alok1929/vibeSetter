@@ -1,6 +1,9 @@
 import json
+import os
+from dotenv import load_dotenv
 import spotipy
 import webbrowser
+from spotipy.oauth2 import SpotifyClientCredentials
   
 username = '31avmzearblyu3ry5vegfnur5bdq'
 clientID = 'c86795318ddc42088b14052af07b6f57'
@@ -11,13 +14,19 @@ token_dict = oauth_object.get_access_token()
 token = token_dict['access_token']
 spotifyObject = spotipy.Spotify(auth=token)
 user_name = spotifyObject.current_user()
-  
-# To print the JSON response from 
-# browser in a readable format.
-# optional can be removed
-#print(json.dumps(user_name, sort_keys=True, indent=4))
+spotify=spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(clientID,clientSecret))
 
-results = spotifyObject.current_user_playlists(limit=50)
-#print(json.dumps(results,sort_keys=True,indent=4))
-for i, namu in enumerate(results['items']):
-    print("%d %s" % (i,  namu['name']))
+
+playlist_id='3Tgx02eWZsRL9k5FCLQKCV'
+results = spotify.playlist_items(playlist_id, fields="items.track.id,items.track.name,total")
+#print(json.dumps(spotify.playlist_items,sort_keys=True,indent=4))
+for i, item in enumerate(results['items']):
+    track = item['track']
+    track_info = spotify.track(track['id'])
+    track_url = track_info['external_urls']['spotify']
+    webbrowser.open(track_url)
+    break
+
+
+#the problem that arises is that songs cant be played using spotipy because it is just webpack that gives u data, so we must use flask to create a standalone application to play songs.
+
